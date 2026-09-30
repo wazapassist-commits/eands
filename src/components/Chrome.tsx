@@ -33,7 +33,7 @@ export function Header() {
 
   return (
     <>
-      <div className="promo">{settings.promo[locale]}</div>
+      <div className="promo">{locale === 'es' ? settings.promo.en : settings.promo[locale]}</div>
       <header className={`header${scrolled ? ' scrolled' : ''}`}>
         <button className="icon-btn hide-desk" aria-label={t.menu} onClick={() => setMenu(true)}>
           <MenuIcon />
@@ -51,6 +51,14 @@ export function Header() {
             <NavLink to="/contact">{t.navContact}</NavLink>
           </nav>
           <div className="lang-switch" role="group" aria-label="Language">
+            <button
+              className={`flag-btn${locale === 'es' ? ' on' : ''}`}
+              onClick={() => setLocale('es')}
+              aria-label="Español"
+              title="Español"
+            >
+              <FlagES />
+            </button>
             <button
               className={`flag-btn${locale === 'fr' ? ' on' : ''}`}
               onClick={() => setLocale('fr')}
@@ -165,10 +173,14 @@ export function Footer() {
         </div>
         <div>
           <h4>{t.footerFollow}</h4>
-          <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">
+          <a href="https://www.instagram.com/essentialandsimple/" target="_blank" rel="noreferrer">
             Instagram
           </a>
-          <a href="https://tiktok.com/" target="_blank" rel="noreferrer">
+          <a
+            href="https://www.tiktok.com/@essential.and.sim?_r=1&_t=ZS-9AA7xdWS8Qf"
+            target="_blank"
+            rel="noreferrer"
+          >
             TikTok
           </a>
         </div>
@@ -237,7 +249,9 @@ export function CartDrawer() {
               <p className="tiny muted">
                 {locale === 'fr'
                   ? 'Paiement finalisé avec notre équipe sur WhatsApp.'
-                  : 'Checkout is completed with our team on WhatsApp.'}
+                  : locale === 'es'
+                    ? 'El pago se finaliza con nuestro equipo en WhatsApp.'
+                    : 'Checkout is completed with our team on WhatsApp.'}
               </p>
             </div>
           </>
@@ -308,6 +322,14 @@ function FlagGB() {
       <path d="M0 0l22 16M22 0L0 16" stroke="#C8102E" strokeWidth="1.2" />
       <path d="M11 0v16M0 8h22" stroke="#fff" strokeWidth="4.5" />
       <path d="M11 0v16M0 8h22" stroke="#C8102E" strokeWidth="2.4" />
+    </svg>
+  )
+}
+function FlagES() {
+  return (
+    <svg width="22" height="16" viewBox="0 0 22 16" aria-hidden>
+      <rect width="22" height="16" rx="2" fill="#AA151B" />
+      <rect y="4" width="22" height="8" fill="#F1BF00" />
     </svg>
   )
 }

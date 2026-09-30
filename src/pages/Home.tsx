@@ -84,9 +84,9 @@ export function Home() {
         </section>
 
         <div className="trust">
-          <div><b>260 g premium</b>Coton lourd, durable</div>
-          <div><b>Édition limitée</b>By S7ven, numérotée</div>
-          <div><b>Retours 15 jours</b>Support WhatsApp 7j/7</div>
+          {t.trustItems.map((x) => (
+            <div key={x.b}><b>{x.b}</b>{x.s}</div>
+          ))}
         </div>
 
         <section className="section" id="galerie">

@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { useEffect } from 'react'
 import { StoreProvider, useStore } from './context/Store'
 import { AdminProvider } from './context/Admin'
 import { Home } from './pages/Home'
@@ -17,6 +18,15 @@ function Toast() {
 }
 
 function RoutesInner() {
+  const { locale } = useStore()
+  useEffect(() => {
+    document.title =
+      locale === 'es'
+        ? 'Essential and Simple — Streetwear minimalista 260 g | By S7ven'
+        : locale === 'en'
+          ? 'Essential and Simple — Minimalist Streetwear 260 g | By S7ven'
+          : 'Essential and Simple — Streetwear minimaliste 260 g | By S7ven'
+  }, [locale])
   return (
     <>
       <Toast />

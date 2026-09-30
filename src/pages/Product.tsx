@@ -145,9 +145,9 @@ export function Product() {
                 <table className="size-table">
                   <thead>
                     <tr>
-                      <th>Size</th>
-                      <th>Chest</th>
-                      <th>Length</th>
+                      <th>{t.sizeTh[0]}</th>
+                      <th>{t.sizeTh[1]}</th>
+                      <th>{t.sizeTh[2]}</th>
                     </tr>
                   </thead>
                   <tbody>

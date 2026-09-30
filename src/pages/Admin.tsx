@@ -80,10 +80,12 @@ function Login({ onOk }: { onOk: () => void }) {
 
 function CloudLogin() {
   const { signIn } = useAdmin()
-  const [email, setEmail] = useState('')
+  const [id, setId] = useState('')
   const [pw, setPw] = useState('')
   const [err, setErr] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
+  const toEmail = (v: string) =>
+    v.includes('@') ? v.trim() : 'contact@essentialandsimple.com'
   return (
     <div className="admin-login">
       <form
@@ -92,7 +94,7 @@ function CloudLogin() {
           e.preventDefault()
           setBusy(true)
           setErr(null)
-          signIn(email.trim(), pw).then((error) => {
+          signIn(toEmail(id), pw).then((error) => {
             setBusy(false)
             if (error) setErr(error)
           })
@@ -101,10 +103,9 @@ function CloudLogin() {
         <p className="wordmark sm">Essential <em>and</em> Simple</p>
         <h1>Administration · Cloud</h1>
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="E-mail admin"
+          value={id}
+          onChange={(e) => setId(e.target.value)}
+          placeholder="Pseudo ou e-mail (eands)"
           autoFocus
           required
         />
@@ -433,9 +434,9 @@ const blankProduct = (): Product => ({
   price: 29,
   colors: ['noir', 'blanc'],
   images: [],
-  name: { fr: '', en: '' },
-  tagline: { fr: '', en: '' },
-  description: { fr: '', en: '' },
+  name: { fr: '', en: '', es: '' },
+  tagline: { fr: '', en: '', es: '' },
+  description: { fr: '', en: '', es: '' },
 })
 
 function ProductsTab() {
@@ -593,6 +594,13 @@ function ProductForm({
           />
         </label>
         <label>
+          Nom (ES)
+          <input
+            value={f.name.es}
+            onChange={(e) => setF((p) => ({ ...p, name: { ...p.name, es: e.target.value } }))}
+          />
+        </label>
+        <label>
           Slug (URL)
           <input value={f.slug} onChange={(e) => set('slug', slugify(e.target.value))} />
         </label>
@@ -624,6 +632,15 @@ function ProductForm({
             }
           />
         </label>
+        <label>
+          Accroche (ES)
+          <input
+            value={f.tagline.es}
+            onChange={(e) =>
+              setF((p) => ({ ...p, tagline: { ...p.tagline, es: e.target.value } }))
+            }
+          />
+        </label>
       </div>
       <label>
         Description (FR)
@@ -642,6 +659,16 @@ function ProductForm({
           value={f.description.en}
           onChange={(e) =>
             setF((p) => ({ ...p, description: { ...p.description, en: e.target.value } }))
+          }
+        />
+      </label>
+      <label>
+        Description (ES)
+        <textarea
+          rows={3}
+          value={f.description.es}
+          onChange={(e) =>
+            setF((p) => ({ ...p, description: { ...p.description, es: e.target.value } }))
           }
         />
       </label>

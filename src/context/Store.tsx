@@ -42,12 +42,33 @@ const Ctx = createContext<Store | null>(null)
 const KEY = 'eas-cart'
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>('fr')
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    try {
+      const saved = localStorage.getItem('eas-locale')
+      if (saved === 'fr' || saved === 'en' || saved === 'es') return saved
+    } catch {
+      /* ignore */
+    }
+    return 'fr'
+  })
+  const setLocale = useCallback((l: Locale) => {
+    setLocaleState(l)
+    try {
+      localStorage.setItem('eas-locale', l)
+    } catch {
+      /* ignore */
+    }
+    document.documentElement.lang = l
+  }, [])
   const [cart, setCart] = useState<CartItem[]>([])
   const [cartOpen, setCartOpen] = useState(false)
   const [toast, setToast] = useState<string | null>(null)
   const { settings } = useAdmin()
   const t = copy[locale]
+
+  useEffect(() => {
+    document.documentElement.lang = locale
+  }, [locale])
 
   useEffect(() => {
     try {
@@ -116,7 +137,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       const text = [
         locale === 'fr'
           ? 'Bonjour, je souhaite commander :'
-          : 'Hi, I would like to order:',
+          : locale === 'es'
+            ? 'Hola, quiero hacer un pedido:'
+            : 'Hi, I would like to order:',
         '',
         ...lines,
         '',

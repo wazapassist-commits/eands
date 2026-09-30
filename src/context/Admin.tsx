@@ -184,10 +184,13 @@ type ProductRow = {
   images: string[]
   name_fr: string
   name_en: string
+  name_es?: string
   tagline_fr: string
   tagline_en: string
+  tagline_es?: string
   desc_fr: string
   desc_en: string
+  desc_es?: string
   sort: number
 }
 
@@ -218,9 +221,9 @@ function fromRow(r: ProductRow): Product {
     limited: !!r.limited,
     colors: (r.colors ?? []).filter(toColor),
     images: r.images ?? [],
-    name: { fr: r.name_fr ?? '', en: r.name_en ?? '' },
-    tagline: { fr: r.tagline_fr ?? '', en: r.tagline_en ?? '' },
-    description: { fr: r.desc_fr ?? '', en: r.desc_en ?? '' },
+    name: { fr: r.name_fr ?? '', en: r.name_en ?? '', es: r.name_es ?? r.name_en ?? '' },
+    tagline: { fr: r.tagline_fr ?? '', en: r.tagline_en ?? '', es: r.tagline_es ?? r.tagline_en ?? '' },
+    description: { fr: r.desc_fr ?? '', en: r.desc_en ?? '', es: r.desc_es ?? r.desc_en ?? '' },
   }
 }
 
@@ -234,10 +237,13 @@ function toRow(p: Product, sort: number): ProductRow {
     images: p.images,
     name_fr: p.name.fr,
     name_en: p.name.en,
+    name_es: p.name.es,
     tagline_fr: p.tagline.fr,
     tagline_en: p.tagline.en,
+    tagline_es: p.tagline.es,
     desc_fr: p.description.fr,
     desc_en: p.description.en,
+    desc_es: p.description.es,
     sort,
   }
 }
