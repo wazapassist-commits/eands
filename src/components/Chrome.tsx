@@ -203,7 +203,7 @@ export function Footer() {
           <h4>{t.footerHelp}</h4>
           <Link to="/aide">{t.faqTitle}</Link>
           <a href="mailto:contact@essentialandsimple.com">contact@essentialandsimple.com</a>
-          <a href="tel:+14435716853">Call, text, WhatsApp — 443-571-6853</a>
+          <a href="tel:+14435716853">Call, text, WhatsApp — <span className="phone-accent">443-571-6853</span></a>
           <p>Maryland, USA</p>
         </div>
         <div>
