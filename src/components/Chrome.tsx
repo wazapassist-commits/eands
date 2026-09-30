@@ -185,14 +185,12 @@ export function Header() {
 
 export function Footer() {
   const { t } = useStore()
-  const { settings } = useAdmin()
   return (
     <footer className="footer">
       <div className="footer-grid">
         <div>
           <p className="wordmark sm">Essential <em>and</em> Simple</p>
           <p className="muted">{t.footerBrand}</p>
-          <p className="muted tiny">{t.allRights}</p>
         </div>
         <div>
           <h4>{t.navShop}</h4>
@@ -205,13 +203,14 @@ export function Footer() {
           <h4>{t.footerHelp}</h4>
           <Link to="/aide">{t.faqTitle}</Link>
           <a href="mailto:contact@essentialandsimple.com">contact@essentialandsimple.com</a>
-          <a href={`https://wa.me/${settings.whatsapp}`} target="_blank" rel="noreferrer">
-            WhatsApp
-          </a>
-          <p>Maryland, USA — +1 (443) 571-6853</p>
+          <a href="tel:+14435716853">Call, text, WhatsApp — 443-571-6853</a>
+          <p>Maryland, USA</p>
         </div>
         <div>
           <h4>{t.footerFollow}</h4>
+          <a href="https://www.facebook.com/share/17dryTzo26/?mibextid=wwXIfr" target="_blank" rel="noreferrer">
+            Facebook
+          </a>
           <a href="https://www.instagram.com/essentialandsimple/" target="_blank" rel="noreferrer">
             Instagram
           </a>

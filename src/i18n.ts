@@ -230,7 +230,7 @@ export const copy = {
     send: 'Send',
     message: 'Message',
     name: 'Name',
-    footerBrand: 'High-quality cotton. 260g weight. Comfort and stability.',
+    footerBrand: 'High-quality cotton. Heavyweight, Comfortable and durable.',
     rights: 'All rights reserved.',
     noir: 'Black',
     blanc: 'White',
