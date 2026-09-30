@@ -1253,6 +1253,84 @@ legend {
   padding: 6px 12px;
   border-radius: 99px;
 }
+
+/* ---------- Galerie maçonnerie ---------- */
+.look-masonry {
+  columns: 3 280px;
+  column-gap: 14px;
+}
+.look-masonry figure {
+  margin: 0 0 14px;
+  break-inside: avoid;
+  background: var(--card);
+  overflow: hidden;
+}
+.look-masonry figure button {
+  display: block;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  background: none;
+  cursor: zoom-in;
+  line-height: 0;
+}
+.look-masonry img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  background: var(--card);
+}
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: rgba(8, 8, 8, 0.94);
+  display: grid;
+  place-items: center;
+  cursor: zoom-out;
+  animation: fade 0.25s ease both;
+}
+.lightbox img {
+  max-width: min(92vw, 1100px);
+  max-height: 88vh;
+  max-height: 88svh;
+  object-fit: contain;
+  cursor: default;
+}
+.lightbox-x {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.4);
+  color: #fff;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+.lightbox-nav.prev {
+  left: 14px;
+}
+.lightbox-nav.next {
+  right: 14px;
+}
 .legal-page {
   max-width: 880px;
 }
