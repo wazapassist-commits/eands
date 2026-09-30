@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { CartDrawer } from '../components/Chrome'
 import { useStore } from '../context/Store'
 import { useAdmin } from '../context/Admin'
+import { pic } from '../lib/asset'
 import { products as FALLBACK_PRODUCTS } from '../data/products'
 
 type CamKey = {
@@ -97,11 +98,11 @@ export function ProductStory({ slug, embedded }: { slug?: string; embedded?: boo
           }}
         >
           <div className="xp-face">
-            <img src={product.images[0]} alt={`${product.name.en} — face`} />
+            <img src={pic(product.images[0])} alt={`${product.name.en} — face`} />
           </div>
           <div className="xp-face xp-backface">
             <img
-              src={product.images[1] ?? product.images[0]}
+              src={pic(product.images[1] ?? product.images[0])}
               alt={`${product.name.en} — dos`}
             />
           </div>

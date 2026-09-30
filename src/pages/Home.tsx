@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Header, Footer, CartDrawer, ProductCard } from '../components/Chrome'
 import { useStore } from '../context/Store'
 import { useAdmin } from '../context/Admin'
+import { pic } from '../lib/asset'
 
 export function Home() {
   const { t } = useStore()
@@ -15,7 +16,7 @@ export function Home() {
       <CartDrawer />
       <main>
         <section className="hero">
-          <img src={content.hero} alt="Essential and Simple — édition By S7ven" />
+          <img src={pic(content.hero)} alt="Essential and Simple — édition By S7ven" />
           <div className="hero-copy">
             <p className="kicker">{t.heroKicker}</p>
             <h1>
@@ -66,7 +67,7 @@ export function Home() {
 
         <section className="cats">
           <Link to="/shop" className="cat">
-            <img src={content.catBw} alt="" loading="lazy" />
+            <img src={pic(content.catBw)} alt="" loading="lazy" />
             <div>
               <h3>{t.catBw}</h3>
               <p>{t.catBwSub}</p>
@@ -74,7 +75,7 @@ export function Home() {
             </div>
           </Link>
           <Link to="/lookbook" className="cat">
-            <img src={content.catSeven} alt="" loading="lazy" />
+            <img src={pic(content.catSeven)} alt="" loading="lazy" />
             <div>
               <h3>{t.catSeven}</h3>
               <p>{t.catSevenSub}</p>
@@ -102,7 +103,7 @@ export function Home() {
           </div>
           <div className="mosaic">
             {content.mosaic.map((src, i) => (
-              <img key={`${src}-${i}`} src={src} alt="" loading="lazy" />
+              <img key={`${src}-${i}`} src={pic(src)} alt="" loading="lazy" />
             ))}
           </div>
         </section>
@@ -117,7 +118,7 @@ export function Home() {
               {t.navStory} →
             </Link>
           </div>
-          <img src={content.storySplit} alt="" />
+          <img src={pic(content.storySplit)} alt="" />
         </section>
 
         <section className="philo">
@@ -134,7 +135,7 @@ export function Home() {
               {t.shopNow} →
             </Link>
           </div>
-          <img src={content.fabric} alt="" loading="lazy" />
+          <img src={pic(content.fabric)} alt="" loading="lazy" />
         </section>
 
         <section className="newsletter">

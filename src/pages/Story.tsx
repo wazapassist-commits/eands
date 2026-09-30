@@ -1,7 +1,7 @@
 import { Header, Footer, CartDrawer } from '../components/Chrome'
 import { useStore } from '../context/Store'
 import { useAdmin } from '../context/Admin'
-import { asset } from '../lib/asset'
+import { asset, pic } from '../lib/asset'
 
 export function Story() {
   const { t } = useStore()
@@ -14,7 +14,7 @@ export function Story() {
         <p className="kicker">{t.storyTitle}</p>
         <h1>{t.heroTitle.replace('\n', ' ')}</h1>
         <div className="story-wide">
-          <img src={settings.content.storyWide} alt="" />
+          <img src={pic(settings.content.storyWide)} alt="" />
           <div>
             <p>{t.storyP1}</p>
             <p>{t.storyP2}</p>
@@ -22,10 +22,10 @@ export function Story() {
           </div>
         </div>
         <div className="mosaic">
-          <img src={asset('/images/face.jpg')} alt="" loading="lazy" />
-          <img src={asset('/images/dos.jpg')} alt="" loading="lazy" />
-          <img src={asset('/images/p41.jpg')} alt="" loading="lazy" />
-          <img src={asset('/images/p42.jpg')} alt="" loading="lazy" />
+          <img src={pic(asset('/images/face.jpg'))} alt="" loading="lazy" />
+          <img src={pic(asset('/images/dos.jpg'))} alt="" loading="lazy" />
+          <img src={pic(asset('/images/p41.jpg'))} alt="" loading="lazy" />
+          <img src={pic(asset('/images/p42.jpg'))} alt="" loading="lazy" />
         </div>
       </main>
       <Footer />

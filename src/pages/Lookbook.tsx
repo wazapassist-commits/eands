@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Header, Footer, CartDrawer } from '../components/Chrome'
 import { useStore } from '../context/Store'
 import { useAdmin } from '../context/Admin'
+import { pic } from '../lib/asset'
 
 export function Lookbook() {
   const { t } = useStore()
@@ -25,7 +26,7 @@ export function Lookbook() {
         <div className="look-grid">
           {shots.map((s, i) => (
             <figure key={`${s.src}-${i}`} className={i % 5 === 0 ? 'wide' : ''}>
-              <img src={s.src} alt={s.label} loading="lazy" />
+              <img src={pic(s.src)} alt={s.label} loading="lazy" />
               <figcaption>{s.label}</figcaption>
             </figure>
           ))}

@@ -15,7 +15,7 @@ import {
 } from '../data/products'
 import { copy } from '../i18n'
 import { supabase, isCloud } from '../lib/supabase'
-import { asset } from '../lib/asset'
+import { asset, raw } from '../lib/asset'
 export type OrderStatus = 'new' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
 
 export type Order = {
@@ -193,6 +193,28 @@ function mergeContent(raw: unknown): SiteContent {
   }
 }
 
+/** L'état garde des chemins bruts (/images/…) ; le rendu résout via pic(). */
+function cleanProduct(p: Product): Product {
+  return { ...p, images: p.images.map(raw) }
+}
+
+function cleanContent(c: SiteContent): SiteContent {
+  return {
+    hero: raw(c.hero),
+    catBw: raw(c.catBw),
+    catSeven: raw(c.catSeven),
+    mosaic: c.mosaic.map(raw),
+    gallery: c.gallery.map((g) => ({ src: raw(g.src), label: g.label })),
+    storyWide: raw(c.storyWide),
+    storySplit: raw(c.storySplit),
+    fabric: raw(c.fabric),
+  }
+}
+
+function cleanSettings(s: Settings): Settings {
+  return { ...s, content: cleanContent(s.content) }
+}
+
 export function slugify(s: string) {
   return s
     .toLowerCase()
@@ -362,11 +384,11 @@ async function cloudOrders(): Promise<Order[] | null> {
 
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>(() =>
-    load<Product[]>(K_PRODUCTS, DEFAULT_PRODUCTS),
+    load<Product[]>(K_PRODUCTS, DEFAULT_PRODUCTS).map(cleanProduct),
   )
   const [settings, setSettings] = useState<Settings>(() => {
     const s = load<Settings>(K_SETTINGS, defaultSettings())
-    return { ...s, content: mergeContent(s.content) }
+    return cleanSettings({ ...s, content: mergeContent(s.content) })
   })
   const [subscribers, setSubscribers] = useState<string[]>(() =>
     load<string[]>(K_SUBS, []),
@@ -400,8 +422,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     ;(async () => {
       const [p, st] = await Promise.all([cloudProducts(), cloudSettings()])
       if (!live) return
-      if (p && p.length > 0) setProducts(p)
-      if (st) setSettings(st)
+      if (p && p.length > 0) setProducts(p.map(cleanProduct))
+      if (st) setSettings(cleanSettings(st))
       const [su, o] = await Promise.all([cloudSubscribers(), cloudOrders()])
       if (!live) return
       if (su) setSubscribers((prev) => Array.from(new Set([...su, ...prev])))
@@ -444,7 +466,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const value = useMemo<Admin>(
     () => ({
       products,
-      saveProduct: (p) => persistProduct(p, products),
+      saveProduct: (p) => persistProduct(cleanProduct(p), products),
       deleteProduct: (slug) => {
         setProducts((prev) => prev.filter((x) => x.slug !== slug))
         cloudFire((db) => db.from('products').delete().eq('slug', slug))
@@ -468,15 +490,16 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       },
       settings,
       saveSettings: (s) => {
-        setSettings(s)
+        const clean = cleanSettings(s)
+        setSettings(clean)
         cloudFire((db) =>
           db.from('settings').upsert(
             {
               id: 1,
-              promo_fr: s.promo.fr,
-              promo_en: s.promo.en,
-              whatsapp: s.whatsapp,
-              content: s.content,
+              promo_fr: clean.promo.fr,
+              promo_en: clean.promo.en,
+              whatsapp: clean.whatsapp,
+              content: clean.content,
             },
             { onConflict: 'id' },
           ),
@@ -538,9 +561,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             subscribers?: string[]
             orders?: Order[]
           }
-          if (Array.isArray(d.products)) setProducts(d.products)
+          if (Array.isArray(d.products)) setProducts(d.products.map(cleanProduct))
           if (d.settings?.promo && d.settings?.whatsapp)
-            setSettings({ ...d.settings, content: mergeContent(d.settings.content) })
+            setSettings(cleanSettings({ ...d.settings, content: mergeContent(d.settings.content) }))
           if (Array.isArray(d.subscribers)) setSubscribers(d.subscribers)
           if (Array.isArray(d.orders)) setOrders(d.orders)
           return true

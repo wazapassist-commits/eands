@@ -4,6 +4,7 @@ import { useAdmin, IMAGE_LIBRARY, slugify } from '../context/Admin'
 import type { Order, OrderStatus, SiteContent } from '../context/Admin'
 import type { Color, Product } from '../data/products'
 import { uploadImage } from '../lib/storage'
+import { pic } from '../lib/asset'
 
 const PASS_KEY = 'eas-admin-pass'
 const SESSION_KEY = 'eas-admin'
@@ -308,7 +309,7 @@ function ImagePick({
   return (
     <div className="admin-imgpick">
       <span className="admin-imgpick-label">{label}</span>
-      {value && <img className="admin-imgpick-prev" src={value} alt="" />}
+      {value && <img className="admin-imgpick-prev" src={pic(value)} alt="" />}
       <select value={value} onChange={(e) => onChange(e.target.value)}>
         <option value="">— Choisir —</option>
         {options.map((src) => (
@@ -543,7 +544,7 @@ function ProductsTab() {
           {products.map((p) => (
             <tr key={p.slug}>
               <td>
-                {p.images[0] && <img className="admin-thumb" src={p.images[0]} alt="" />}
+                {p.images[0] && <img className="admin-thumb" src={pic(p.images[0])} alt="" />}
               </td>
               <td>
                 <strong>{p.name.fr || p.slug}</strong>
@@ -773,7 +774,7 @@ function ProductForm({
       <ul className="admin-imglist">
         {f.images.map((src, i) => (
           <li key={src + i}>
-            <img src={src} alt="" />
+            <img src={pic(src)} alt="" />
             <span>{i === 0 ? 'Couverture' : `#${i + 1}`}</span>
             <button type="button" onClick={() => move(i, -1)}>
               ↑
@@ -807,7 +808,7 @@ function ProductForm({
             }
             title={src}
           >
-            <img src={src} alt="" loading="lazy" />
+            <img src={pic(src)} alt="" loading="lazy" />
           </button>
         ))}
       </div>

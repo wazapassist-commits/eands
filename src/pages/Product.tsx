@@ -4,6 +4,7 @@ import { Header, Footer, CartDrawer, ProductCard } from '../components/Chrome'
 import { ProductStory } from './Experience'
 import { useStore } from '../context/Store'
 import { useAdmin } from '../context/Admin'
+import { pic } from '../lib/asset'
 import type { Color, Size } from '../data/products'
 
 const sizes: Size[] = ['S', 'M', 'L', 'XL']
@@ -53,14 +54,14 @@ export function Product() {
                 onClick={() => setImg(i)}
                 aria-label={`${i + 1}`}
               >
-                <img src={src} alt="" />
+                <img src={pic(src)} alt="" />
               </button>
             ))}
           </div>
           <div className="p-main">
             {p.limited && !p.soldOut && <span className="chip dark">{t.limited}</span>}
             {p.soldOut && <span className="chip dark">{t.soldOut}</span>}
-            <img className="main-img" src={p.images[img] ?? p.images[0]} alt={p.name[locale]} />
+            <img className="main-img" src={pic(p.images[img] ?? p.images[0])} alt={p.name[locale]} />
           </div>
         </div>
         <div className="p-info">

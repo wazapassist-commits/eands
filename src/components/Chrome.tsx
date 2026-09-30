@@ -2,6 +2,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { useStore } from '../context/Store'
 import { useAdmin } from '../context/Admin'
+import { pic } from '../lib/asset'
 
 export function Header() {
   const { t, locale, setLocale, count, setCartOpen } = useStore()
@@ -128,7 +129,7 @@ export function Header() {
               {results.map((p) => (
                 <li key={p.slug}>
                   <Link to={`/produit/${p.slug}`} onClick={() => setSearch(false)}>
-                    <img src={p.images[0]} alt="" />
+                    <img src={pic(p.images[0])} alt="" />
                     <span>
                       {p.name[locale]}
                       <small>{p.tagline[locale]}</small>
@@ -216,7 +217,7 @@ export function CartDrawer() {
             <ul className="cart-list">
               {cart.map((i) => (
                 <li key={i.id}>
-                  <img src={i.image} alt="" />
+                  <img src={pic(i.image)} alt="" />
                   <div>
                     <strong>{i.name}</strong>
                     <p className="muted">
@@ -271,7 +272,7 @@ export function ProductCard({ slug }: { slug: string }) {
       <div className="pcard-img">
         {p.limited && !p.soldOut && <span className="chip dark">{t.limited}</span>}
         {p.soldOut && <span className="chip dark">{t.soldOut}</span>}
-        <img src={p.images[0]} alt={p.name[locale]} loading="lazy" />
+        <img src={pic(p.images[0])} alt={p.name[locale]} loading="lazy" />
       </div>
       <div className="pcard-meta">
         <h3>{p.name[locale]}</h3>
