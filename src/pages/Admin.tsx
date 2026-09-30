@@ -130,7 +130,7 @@ function CloudLogin() {
 }
 
 function Panel({ onLogout }: { onLogout: () => void }) {
-  const { cloud, cloudUser } = useAdmin()
+  const { cloud, cloudUser, syncError } = useAdmin()
   const [tab, setTab] = useState<Tab>('dash')
   const tabs: { id: Tab; label: string }[] = [
     { id: 'dash', label: 'Tableau de bord' },
@@ -158,7 +158,8 @@ function Panel({ onLogout }: { onLogout: () => void }) {
           ))}
         </nav>
         <div className="admin-side-foot">
-          <small>{cloud ? `Cloud · ${cloudUser ?? 'hors ligne'}` : 'Mode local'}</small>
+          <small>{cloud ? `Cloud : ${cloudUser ?? 'hors ligne'}` : 'Mode local'}</small>
+          {syncError && <small className="admin-sync-err">{syncError}</small>}
           <Link to="/">Voir le site</Link>
           <button type="button" className="linkish" onClick={onLogout}>
             Déconnexion

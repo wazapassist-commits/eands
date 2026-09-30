@@ -112,6 +112,7 @@ type Admin = {
   importAll: (json: string) => boolean
   cloud: boolean
   cloudUser: string | null
+  syncError: string | null
   signIn: (email: string, password: string) => Promise<string | null>
   signOut: () => void
   pushAll: () => Promise<void>
@@ -462,6 +463,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     load<Announcement[]>(K_ANNOUNCE, []),
   )
   const [cloudUser, setCloudUser] = useState<string | null>(null)
+  const [syncError, setSyncError] = useState<string | null>(null)
 
   useEffect(() => store(K_PRODUCTS, products), [products])
   useEffect(() => store(K_SETTINGS, settings), [settings])
@@ -510,12 +512,17 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const cloudFire = (fn: (db: SupabaseClient) => PromiseLike<unknown>) => {
-    if (!supabase || !cloudUser) return
+    if (!supabase || !cloudUser) {
+      setSyncError('Hors ligne : modif locale uniquement.')
+      return
+    }
     try {
-      const r = fn(supabase) as Promise<unknown>
-      if (r && typeof r.catch === 'function') r.catch(() => {})
+      Promise.resolve(fn(supabase)).then(
+        () => setSyncError(null),
+        () => setSyncError('Echec synchro cloud.'),
+      )
     } catch {
-      /* hors-ligne : le local reste la référence */
+      setSyncError('Echec synchro cloud.')
     }
   }
 
@@ -682,6 +689,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       },
       cloud: isCloud,
       cloudUser,
+      syncError,
       signIn: async (email, password) => {
         if (!supabase) return 'Cloud non configuré.'
         const { error } = await supabase.auth.signInWithPassword({ email, password })
@@ -721,7 +729,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             .upsert(announcements.map(toAnnounceRow), { onConflict: 'id' })
       },
     }),
-    [products, settings, subscribers, orders, announcements, cloudUser],
+    [products, settings, subscribers, orders, announcements, cloudUser, syncError],
   )
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>

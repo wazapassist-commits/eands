@@ -2073,6 +2073,9 @@ legend {
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
+.admin-side-foot .admin-sync-err {
+  color: #ff9d97;
+}
 .admin-side-foot a {
   color: rgba(255, 255, 255, 0.65);
   font-size: 13px;
