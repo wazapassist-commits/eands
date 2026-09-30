@@ -44,7 +44,7 @@ function AnnounceBar() {
 
 export function Header() {
   const { t, locale, setLocale, count, setCartOpen } = useStore()
-  const { settings, products } = useAdmin()
+  const { products } = useAdmin()
   const [menu, setMenu] = useState(false)
   const [search, setSearch] = useState(false)
   const [q, setQ] = useState('')
@@ -73,7 +73,6 @@ export function Header() {
   return (
     <>
       <AnnounceBar />
-      <div className="promo">{settings.promo[locale]}</div>
       <header className={`header${scrolled ? ' scrolled' : ''}`}>
         <button className="icon-btn hide-desk" aria-label={t.menu} onClick={() => setMenu(true)}>
           <MenuIcon />
