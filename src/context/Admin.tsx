@@ -18,6 +18,16 @@ import { supabase, isCloud } from '../lib/supabase'
 import { asset, raw } from '../lib/asset'
 export type OrderStatus = 'new' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
 
+export type Announcement = {
+  id: string
+  fr: string
+  en: string
+  es: string
+  link: string
+  active: boolean
+  sort: number
+}
+
 export type Order = {
   id: string
   createdAt: string
@@ -94,6 +104,10 @@ type Admin = {
   orders: Order[]
   saveOrder: (o: Order) => void
   deleteOrder: (id: string) => void
+  announcements: Announcement[]
+  saveAnnouncement: (a: Announcement) => void
+  deleteAnnouncement: (id: string) => void
+  toggleAnnouncement: (id: string) => void
   exportAll: () => void
   importAll: (json: string) => boolean
   cloud: boolean
@@ -109,6 +123,7 @@ const K_PRODUCTS = 'eas-admin-products'
 const K_SETTINGS = 'eas-admin-settings'
 const K_SUBS = 'eas-subscribers'
 const K_ORDERS = 'eas-orders'
+const K_ANNOUNCE = 'eas-announcements'
 
 export const IMAGE_LIBRARY = [
   asset('/images/face.jpg'),
@@ -262,6 +277,40 @@ type OrderRow = {
   status: string
 }
 
+type AnnounceRow = {
+  id: string
+  text_fr: string
+  text_en: string
+  text_es: string
+  link: string
+  active: boolean
+  sort: number
+}
+
+function fromAnnounceRow(r: AnnounceRow): Announcement {
+  return {
+    id: r.id,
+    fr: r.text_fr ?? '',
+    en: r.text_en ?? r.text_fr ?? '',
+    es: r.text_es ?? r.text_en ?? r.text_fr ?? '',
+    link: r.link ?? '',
+    active: r.active ?? true,
+    sort: Number(r.sort) || 0,
+  }
+}
+
+function toAnnounceRow(a: Announcement): AnnounceRow {
+  return {
+    id: a.id,
+    text_fr: a.fr,
+    text_en: a.en,
+    text_es: a.es,
+    link: a.link,
+    active: a.active,
+    sort: a.sort,
+  }
+}
+
 const toColor = (c: string): c is Color => c === 'noir' || c === 'blanc'
 
 function fromRow(r: ProductRow): Product {
@@ -382,6 +431,20 @@ async function cloudOrders(): Promise<Order[] | null> {
   }
 }
 
+async function cloudAnnouncements(): Promise<Announcement[] | null> {
+  if (!supabase) return null
+  try {
+    const { data, error } = await supabase
+      .from('announcements')
+      .select('*')
+      .order('sort', { ascending: true })
+    if (error || !data) return null
+    return (data as AnnounceRow[]).map(fromAnnounceRow)
+  } catch {
+    return null
+  }
+}
+
 export function AdminProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>(() =>
     load<Product[]>(K_PRODUCTS, DEFAULT_PRODUCTS).map(cleanProduct),
@@ -394,12 +457,16 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     load<string[]>(K_SUBS, []),
   )
   const [orders, setOrders] = useState<Order[]>(() => load<Order[]>(K_ORDERS, []))
+  const [announcements, setAnnouncements] = useState<Announcement[]>(() =>
+    load<Announcement[]>(K_ANNOUNCE, []),
+  )
   const [cloudUser, setCloudUser] = useState<string | null>(null)
 
   useEffect(() => store(K_PRODUCTS, products), [products])
   useEffect(() => store(K_SETTINGS, settings), [settings])
   useEffect(() => store(K_SUBS, subscribers), [subscribers])
   useEffect(() => store(K_ORDERS, orders), [orders])
+  useEffect(() => store(K_ANNOUNCE, announcements), [announcements])
 
   // Session admin (Supabase Auth)
   useEffect(() => {
@@ -427,6 +494,9 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const [su, o] = await Promise.all([cloudSubscribers(), cloudOrders()])
       if (!live) return
       if (su) setSubscribers((prev) => Array.from(new Set([...su, ...prev])))
+      const an = await cloudAnnouncements()
+      if (!live) return
+      if (an && an.length > 0) setAnnouncements(an)
       if (o)
         setOrders((prev) => {
           const seen = new Set(o.map((x) => x.id))
@@ -535,6 +605,30 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         setOrders((prev) => prev.filter((x) => x.id !== id))
         cloudFire((db) => db.from('orders').delete().eq('id', id))
       },
+      announcements,
+      saveAnnouncement: (a) => {
+        setAnnouncements((prev) => {
+          const i = prev.findIndex((x) => x.id === a.id)
+          if (i >= 0) {
+            const next = [...prev]
+            next[i] = a
+            return next
+          }
+          return [...prev, a].sort((x, y) => x.sort - y.sort)
+        })
+        cloudFire((db) => db.from('announcements').upsert(toAnnounceRow(a), { onConflict: 'id' }))
+      },
+      deleteAnnouncement: (id) => {
+        setAnnouncements((prev) => prev.filter((x) => x.id !== id))
+        cloudFire((db) => db.from('announcements').delete().eq('id', id))
+      },
+      toggleAnnouncement: (id) => {
+        const cur = announcements.find((x) => x.id === id)
+        if (!cur) return
+        const next = { ...cur, active: !cur.active }
+        setAnnouncements((prev) => prev.map((x) => (x.id === id ? next : x)))
+        cloudFire((db) => db.from('announcements').upsert(toAnnounceRow(next), { onConflict: 'id' }))
+      },
       exportAll: () => {
         const data = JSON.stringify(
           {
@@ -542,6 +636,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             settings: load<Settings>(K_SETTINGS, defaultSettings()),
             subscribers: load<string[]>(K_SUBS, []),
             orders: load<Order[]>(K_ORDERS, []),
+            announcements: load<Announcement[]>(K_ANNOUNCE, []),
           },
           null,
           2,
@@ -560,12 +655,14 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             settings?: Settings
             subscribers?: string[]
             orders?: Order[]
+            announcements?: Announcement[]
           }
           if (Array.isArray(d.products)) setProducts(d.products.map(cleanProduct))
           if (d.settings?.promo && d.settings?.whatsapp)
             setSettings(cleanSettings({ ...d.settings, content: mergeContent(d.settings.content) }))
           if (Array.isArray(d.subscribers)) setSubscribers(d.subscribers)
           if (Array.isArray(d.orders)) setOrders(d.orders)
+          if (Array.isArray(d.announcements)) setAnnouncements(d.announcements)
           return true
         } catch {
           return false
@@ -605,9 +702,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           await supabase
             .from('orders')
             .upsert(orders.map(toOrderRow), { onConflict: 'id' })
+        if (announcements.length > 0)
+          await supabase
+            .from('announcements')
+            .upsert(announcements.map(toAnnounceRow), { onConflict: 'id' })
       },
     }),
-    [products, settings, subscribers, orders, cloudUser],
+    [products, settings, subscribers, orders, announcements, cloudUser],
   )
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>

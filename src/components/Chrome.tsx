@@ -1,8 +1,46 @@
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useStore } from '../context/Store'
 import { useAdmin } from '../context/Admin'
 import { pic } from '../lib/asset'
+
+function AnnounceBar() {
+  const { locale } = useStore()
+  const { announcements } = useAdmin()
+  const list = useMemo(
+    () =>
+      announcements
+        .filter((a) => a.active && (a[locale] || a.en || a.fr))
+        .sort((x, y) => x.sort - y.sort),
+    [announcements, locale],
+  )
+  const [idx, setIdx] = useState(0)
+  useEffect(() => setIdx(0), [list.length, locale])
+  useEffect(() => {
+    if (list.length < 2) return
+    const id = window.setInterval(() => setIdx((i) => (i + 1) % list.length), 5000)
+    return () => window.clearInterval(id)
+  }, [list.length])
+  if (list.length === 0) return null
+  const a = list[idx % list.length]
+  const text = a[locale] || a.en || a.fr
+  const inner = <span key={`${a.id}-${idx}`}>{text}</span>
+  return (
+    <div className="announce">
+      {a.link ? (
+        a.link.startsWith('http') ? (
+          <a href={a.link} target="_blank" rel="noreferrer">
+            {inner}
+          </a>
+        ) : (
+          <Link to={a.link}>{inner}</Link>
+        )
+      ) : (
+        inner
+      )}
+    </div>
+  )
+}
 
 export function Header() {
   const { t, locale, setLocale, count, setCartOpen } = useStore()
@@ -34,6 +72,7 @@ export function Header() {
 
   return (
     <>
+      <AnnounceBar />
       <div className="promo">{locale === 'es' ? settings.promo.en : settings.promo[locale]}</div>
       <header className={`header${scrolled ? ' scrolled' : ''}`}>
         <button className="icon-btn hide-desk" aria-label={t.menu} onClick={() => setMenu(true)}>

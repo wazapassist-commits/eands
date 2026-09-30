@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAdmin, IMAGE_LIBRARY, slugify } from '../context/Admin'
-import type { Order, OrderStatus, SiteContent } from '../context/Admin'
+import type { Announcement, Order, OrderStatus, SiteContent } from '../context/Admin'
 import type { Color, Product } from '../data/products'
 import { uploadImage } from '../lib/storage'
 import { pic } from '../lib/asset'
@@ -19,7 +19,7 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
   cancelled: 'Annulée',
 }
 
-type Tab = 'dash' | 'products' | 'content' | 'orders' | 'subs' | 'settings'
+type Tab = 'dash' | 'products' | 'content' | 'announce' | 'orders' | 'subs' | 'settings'
 
 export function Admin() {
   const { cloud, cloudUser, signOut } = useAdmin()
@@ -136,6 +136,7 @@ function Panel({ onLogout }: { onLogout: () => void }) {
     { id: 'dash', label: 'Tableau de bord' },
     { id: 'products', label: 'Produits' },
     { id: 'content', label: 'Contenus' },
+    { id: 'announce', label: 'Annonces' },
     { id: 'orders', label: 'Commandes' },
     { id: 'subs', label: 'Newsletter' },
     { id: 'settings', label: 'Réglages' },
@@ -168,6 +169,7 @@ function Panel({ onLogout }: { onLogout: () => void }) {
         {tab === 'dash' && <Dash />}
         {tab === 'products' && <ProductsTab />}
         {tab === 'content' && <ContentTab />}
+        {tab === 'announce' && <AnnounceTab />}
         {tab === 'orders' && <OrdersTab />}
         {tab === 'subs' && <SubsTab />}
         {tab === 'settings' && <SettingsTab />}
@@ -838,6 +840,171 @@ function ProductForm({
           Annuler
         </button>
         <button type="button" className="btn" onClick={save}>
+          Enregistrer
+        </button>
+      </div>
+    </div>
+  )
+}
+
+/* ---------------- Annonces ---------------- */
+
+const blankAnnouncement = (sort: number): Announcement => ({
+  id: Date.now().toString(36),
+  fr: '',
+  en: '',
+  es: '',
+  link: '',
+  active: true,
+  sort,
+})
+
+function AnnounceTab() {
+  const { announcements, deleteAnnouncement, toggleAnnouncement } =
+    useAdmin()
+  const [editing, setEditing] = useState<Announcement | 'new' | null>(null)
+  const sorted = [...announcements].sort((a, b) => a.sort - b.sort)
+  return (
+    <div>
+      <div className="admin-head">
+        <h1>Annonces ({announcements.length})</h1>
+        <button type="button" className="btn" onClick={() => setEditing('new')}>
+          + Nouvelle
+        </button>
+      </div>
+      <p className="muted">
+        Bandeau blanc rotatif en haut du site (au-dessus du bandeau noir). Vide =
+        masqué.
+      </p>
+      {editing && (
+        <AnnounceForm
+          initial={editing === 'new' ? blankAnnouncement(announcements.length) : editing}
+          onClose={() => setEditing(null)}
+        />
+      )}
+      {sorted.length === 0 ? (
+        <p className="muted">Aucune annonce pour le moment.</p>
+      ) : (
+        <table className="admin-table">
+          <thead>
+            <tr>
+              <th>Texte (FR)</th>
+              <th>Lien</th>
+              <th>Ordre</th>
+              <th>Active</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {sorted.map((a) => (
+              <tr key={a.id}>
+                <td>
+                  <strong>{a.fr || '—'}</strong>
+                  <small>
+                    EN: {a.en || '—'} · ES: {a.es || '—'}
+                  </small>
+                </td>
+                <td className="admin-wrap">{a.link || '—'}</td>
+                <td>{a.sort}</td>
+                <td>
+                  <button
+                    type="button"
+                    className={`admin-pill${a.active ? ' on' : ''}`}
+                    onClick={() => toggleAnnouncement(a.id)}
+                  >
+                    {a.active ? 'Oui' : 'Non'}
+                  </button>
+                </td>
+                <td className="admin-row-btns">
+                  <button type="button" className="linkish" onClick={() => setEditing(a)}>
+                    Modifier
+                  </button>
+                  <button
+                    type="button"
+                    className="linkish danger"
+                    onClick={() => {
+                      if (window.confirm('Supprimer cette annonce ?'))
+                        deleteAnnouncement(a.id)
+                    }}
+                  >
+                    Supprimer
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  )
+}
+
+function AnnounceForm({
+  initial,
+  onClose,
+}: {
+  initial: Announcement
+  onClose: () => void
+}) {
+  const { saveAnnouncement } = useAdmin()
+  const [f, setF] = useState<Announcement>({ ...initial })
+  const [err, setErr] = useState('')
+  return (
+    <div className="admin-card admin-form">
+      <h2>Annonce</h2>
+      <label>
+        Texte (FR)
+        <input value={f.fr} onChange={(e) => setF({ ...f, fr: e.target.value })} />
+      </label>
+      <label>
+        Texte (EN)
+        <input value={f.en} onChange={(e) => setF({ ...f, en: e.target.value })} />
+      </label>
+      <label>
+        Texte (ES)
+        <input value={f.es} onChange={(e) => setF({ ...f, es: e.target.value })} />
+      </label>
+      <div className="admin-grid2">
+        <label>
+          Lien (optionnel, ex. /shop)
+          <input
+            value={f.link}
+            onChange={(e) => setF({ ...f, link: e.target.value.trim() })}
+            placeholder="/shop"
+          />
+        </label>
+        <label>
+          Ordre
+          <input
+            type="number"
+            value={f.sort}
+            onChange={(e) => setF({ ...f, sort: Number(e.target.value) || 0 })}
+          />
+        </label>
+      </div>
+      <label className="admin-check">
+        <input
+          type="checkbox"
+          checked={f.active}
+          onChange={(e) => setF({ ...f, active: e.target.checked })}
+        />
+        Affichée sur le site
+      </label>
+      {err && <p className="admin-err">{err}</p>}
+      <div className="admin-head-btns">
+        <button type="button" className="btn light" onClick={onClose}>
+          Annuler
+        </button>
+        <button
+          type="button"
+          className="btn"
+          onClick={() => {
+            if (!f.fr.trim() && !f.en.trim() && !f.es.trim())
+              return setErr('Texte requis (au moins une langue).')
+            saveAnnouncement(f)
+            onClose()
+          }}
+        >
           Enregistrer
         </button>
       </div>

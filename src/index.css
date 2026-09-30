@@ -76,6 +76,24 @@ h3 {
 }
 
 /* ---------- Promo / marquee ---------- */
+.announce {
+  background: var(--white);
+  color: var(--ink);
+  text-align: center;
+  font-size: 10.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.announce span {
+  display: inline-block;
+  animation: fade 0.45s ease both;
+}
+.announce a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .promo {
   background: var(--ink);
   color: #f4f4f4;
