@@ -2297,11 +2297,25 @@ legend {
     display: grid;
     width: 100%;
   }
+  .admin-side nav button {
+    padding: 12px 8px;
+    font-size: 12px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .admin-side-foot {
     margin-top: 0;
     grid-template-columns: 1fr 1fr;
     display: grid;
     width: 100%;
+  }
+  .admin-head > * {
+    min-width: 0;
+  }
+  .admin-head-btns {
+    flex-wrap: wrap;
   }
   .admin-main {
     padding: 20px;
