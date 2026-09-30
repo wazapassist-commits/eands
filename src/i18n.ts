@@ -19,7 +19,7 @@ export const copy = {
     shopNow: 'Acheter',
     lookbook: 'Lookbook',
     featured: 'La collection',
-    featuredSub: 'Cinq silhouettes. Deux couleurs. Une intention.',
+    featuredSub: 'Designs. Deux couleurs. Une intention.',
     catBw: 'Noir & blanc',
     catBwSub: 'Tees neutres en coton premium.',
     catSeven: 'By S7ven',
@@ -33,7 +33,7 @@ export const copy = {
       'Chaque ligne, chaque contraste entre le noir et le blanc, vise une esthétique pure, sans artifice. Porter Essential and Simple, c’est affirmer que le détail fait le tout — et que ce qui est simple reste éternel.',
     philoTitle: 'Philosophie',
     philoQuote:
-      '« Less is more. » Coton lourd, construction nette, graphisme géométrique. La signature By S7ven reste discrète : une exclusivité silencieuse, jamais un branding criant.',
+      '« Less is more. » Retirez l’inutile, ne gardez que l’essentiel. Pour nous, la simplicité est le raffinement ultime. Notre philosophie : un minimalisme intentionnel. Des tissus premium épais, et des designs qui transcendent les tendances. Et la signature By S7ven reste discrète : de l’exclusivité sans branding criant.',
     fabricTitle: '260 g',
     fabricText:
       'Coton premium, grammage lourd. Le tombé est stable, le confort tient dans la durée. Conçu pour le quotidien — et pour rester.',
@@ -162,7 +162,7 @@ export const copy = {
     shopNow: 'Shop now',
     lookbook: 'Lookbook',
     featured: 'The collection',
-    featuredSub: 'Five silhouettes. Two colors. One intention.',
+    featuredSub: 'Designs. Two colors. One intention.',
     catBw: 'Black & white',
     catBwSub: 'Neutral tees in premium cotton.',
     catSeven: 'By S7ven',
@@ -176,7 +176,7 @@ export const copy = {
       'Every line, every contrast between black and white, is designed for a pure aesthetic, free of artifice. To wear Essential and Simple is to affirm that the detail makes the whole — and that what is simple remains eternal.',
     philoTitle: 'Philosophy',
     philoQuote:
-      '“Less is more.” Heavyweight cotton, clean construction, geometric design. The By S7ven signature stays quiet: exclusivity without loud branding.',
+      '“Less is more.” Remove the unnecessary, keep only what matters. For us, simplicity is the ultimate sophistication. Our ethos focuses on intentional minimalism. Premium heavyweight fabrics, and designs that transcend trends. And the By S7ven signature stays quiet: exclusivity without loud branding.',
     fabricTitle: '260 g',
     fabricText:
       'Premium cotton, heavyweight. Stable drape, lasting comfort. Made for everyday — and to stay.',
@@ -305,7 +305,7 @@ export const copy = {
     shopNow: 'Comprar',
     lookbook: 'Lookbook',
     featured: 'La colección',
-    featuredSub: 'Cinco siluetas. Dos colores. Una intención.',
+    featuredSub: 'Designs. Dos colores. Una intención.',
     catBw: 'Negro & blanco',
     catBwSub: 'Camisetas neutras de algodón premium.',
     catSeven: 'By S7ven',
@@ -319,7 +319,7 @@ export const copy = {
       'Cada línea, cada contraste entre el negro y el blanco, busca una estética pura, sin artificios. Vestir Essential and Simple es afirmar que el detalle lo es todo — y que lo simple permanece.',
     philoTitle: 'Filosofía',
     philoQuote:
-      '«Less is more.» Algodón pesado, construcción limpia, diseño geométrico. La firma By S7ven es discreta: exclusividad silenciosa, nunca un logo a gritos.',
+      '«Less is more.» Elimina lo innecesario, quédate solo con lo esencial. Para nosotros, la simplicidad es la máxima sofisticación. Nuestra filosofía se centra en el minimalismo intencional. Tejidos premium pesados y diseños que trascienden las tendencias. Y la firma By S7ven es discreta: exclusividad sin branding a gritos.',
     fabricTitle: '260 g',
     fabricText:
       'Algodón premium, pesado. Caída estable, comodidad duradera. Hecho para el día a día — y para quedarse.',
