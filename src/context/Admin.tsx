@@ -16,7 +16,6 @@ import {
 import { copy } from '../i18n'
 import { supabase, isCloud } from '../lib/supabase'
 import { asset } from '../lib/asset'
-
 export type OrderStatus = 'new' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'
 
 export type Order = {
@@ -32,6 +31,34 @@ export type Order = {
 export type Settings = {
   promo: { fr: string; en: string }
   whatsapp: string
+  content: SiteContent
+}
+
+export type SiteContent = {
+  hero: string
+  catBw: string
+  catSeven: string
+  mosaic: string[]
+  storyWide: string
+  storySplit: string
+  fabric: string
+}
+
+export function defaultContent(): SiteContent {
+  return {
+    hero: asset('/images/hero.jpg'),
+    catBw: asset('/images/p41.jpg'),
+    catSeven: asset('/images/p42.jpg'),
+    mosaic: [
+      asset('/images/face.jpg'),
+      asset('/images/dos.jpg'),
+      asset('/images/p41.jpg'),
+      asset('/images/editorial.jpg'),
+    ],
+    storyWide: asset('/images/p42.jpg'),
+    storySplit: asset('/images/editorial.jpg'),
+    fabric: asset('/images/p3.jpg'),
+  }
 }
 
 type Admin = {
@@ -113,6 +140,27 @@ function defaultSettings(): Settings {
   return {
     promo: { fr: copy.fr.promo, en: copy.en.promo },
     whatsapp: DEFAULT_WA,
+    content: defaultContent(),
+  }
+}
+
+function mergeContent(raw: unknown): SiteContent {
+  const d = defaultContent()
+  if (!raw || typeof raw !== 'object') return d
+  const c = raw as Partial<SiteContent>
+  return {
+    hero: typeof c.hero === 'string' && c.hero ? c.hero : d.hero,
+    catBw: typeof c.catBw === 'string' && c.catBw ? c.catBw : d.catBw,
+    catSeven: typeof c.catSeven === 'string' && c.catSeven ? c.catSeven : d.catSeven,
+    mosaic:
+      Array.isArray(c.mosaic) && c.mosaic.length > 0
+        ? c.mosaic.filter((x): x is string => typeof x === 'string')
+        : d.mosaic,
+    storyWide:
+      typeof c.storyWide === 'string' && c.storyWide ? c.storyWide : d.storyWide,
+    storySplit:
+      typeof c.storySplit === 'string' && c.storySplit ? c.storySplit : d.storySplit,
+    fabric: typeof c.fabric === 'string' && c.fabric ? c.fabric : d.fabric,
   }
 }
 
@@ -143,7 +191,12 @@ type ProductRow = {
   sort: number
 }
 
-type SettingsRow = { promo_fr: string; promo_en: string; whatsapp: string }
+type SettingsRow = {
+  promo_fr: string
+  promo_en: string
+  whatsapp: string
+  content: unknown
+}
 
 type OrderRow = {
   id: string
@@ -237,7 +290,11 @@ async function cloudSettings(): Promise<Settings | null> {
       .maybeSingle()
     if (error || !data) return null
     const r = data as SettingsRow
-    return { promo: { fr: r.promo_fr, en: r.promo_en }, whatsapp: r.whatsapp }
+    return {
+      promo: { fr: r.promo_fr, en: r.promo_en },
+      whatsapp: r.whatsapp,
+      content: mergeContent(r.content),
+    }
   } catch {
     return null
   }
@@ -272,9 +329,10 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const [products, setProducts] = useState<Product[]>(() =>
     load<Product[]>(K_PRODUCTS, DEFAULT_PRODUCTS),
   )
-  const [settings, setSettings] = useState<Settings>(() =>
-    load<Settings>(K_SETTINGS, defaultSettings()),
-  )
+  const [settings, setSettings] = useState<Settings>(() => {
+    const s = load<Settings>(K_SETTINGS, defaultSettings())
+    return { ...s, content: mergeContent(s.content) }
+  })
   const [subscribers, setSubscribers] = useState<string[]>(() =>
     load<string[]>(K_SUBS, []),
   )
@@ -378,7 +436,13 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         setSettings(s)
         cloudFire((db) =>
           db.from('settings').upsert(
-            { id: 1, promo_fr: s.promo.fr, promo_en: s.promo.en, whatsapp: s.whatsapp },
+            {
+              id: 1,
+              promo_fr: s.promo.fr,
+              promo_en: s.promo.en,
+              whatsapp: s.whatsapp,
+              content: s.content,
+            },
             { onConflict: 'id' },
           ),
         )
@@ -440,7 +504,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             orders?: Order[]
           }
           if (Array.isArray(d.products)) setProducts(d.products)
-          if (d.settings?.promo && d.settings?.whatsapp) setSettings(d.settings)
+          if (d.settings?.promo && d.settings?.whatsapp)
+            setSettings({ ...d.settings, content: mergeContent(d.settings.content) })
           if (Array.isArray(d.subscribers)) setSubscribers(d.subscribers)
           if (Array.isArray(d.orders)) setOrders(d.orders)
           return true
@@ -470,6 +535,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             promo_fr: settings.promo.fr,
             promo_en: settings.promo.en,
             whatsapp: settings.whatsapp,
+            content: settings.content,
           },
           { onConflict: 'id' },
         )

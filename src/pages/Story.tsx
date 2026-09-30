@@ -5,6 +5,7 @@ import { asset } from '../lib/asset'
 
 export function Story() {
   const { t } = useStore()
+  const { settings } = useAdmin()
   return (
     <>
       <Header />
@@ -13,7 +14,7 @@ export function Story() {
         <p className="kicker">{t.storyTitle}</p>
         <h1>{t.heroTitle.replace('\n', ' ')}</h1>
         <div className="story-wide">
-          <img src={asset('/images/p42.jpg')} alt="" />
+          <img src={settings.content.storyWide} alt="" />
           <div>
             <p>{t.storyP1}</p>
             <p>{t.storyP2}</p>

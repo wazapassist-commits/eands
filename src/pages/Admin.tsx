@@ -1,8 +1,9 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAdmin, IMAGE_LIBRARY, slugify } from '../context/Admin'
-import type { Order, OrderStatus } from '../context/Admin'
+import type { Order, OrderStatus, SiteContent } from '../context/Admin'
 import type { Color, Product } from '../data/products'
+import { uploadImage } from '../lib/storage'
 
 const PASS_KEY = 'eas-admin-pass'
 const SESSION_KEY = 'eas-admin'
@@ -17,7 +18,7 @@ const STATUS_LABEL: Record<OrderStatus, string> = {
   cancelled: 'Annulée',
 }
 
-type Tab = 'dash' | 'products' | 'orders' | 'subs' | 'settings'
+type Tab = 'dash' | 'products' | 'content' | 'orders' | 'subs' | 'settings'
 
 export function Admin() {
   const { cloud, cloudUser, signOut } = useAdmin()
@@ -132,6 +133,7 @@ function Panel({ onLogout }: { onLogout: () => void }) {
   const tabs: { id: Tab; label: string }[] = [
     { id: 'dash', label: 'Tableau de bord' },
     { id: 'products', label: 'Produits' },
+    { id: 'content', label: 'Contenus' },
     { id: 'orders', label: 'Commandes' },
     { id: 'subs', label: 'Newsletter' },
     { id: 'settings', label: 'Réglages' },
@@ -163,6 +165,7 @@ function Panel({ onLogout }: { onLogout: () => void }) {
       <main className="admin-main">
         {tab === 'dash' && <Dash />}
         {tab === 'products' && <ProductsTab />}
+        {tab === 'content' && <ContentTab />}
         {tab === 'orders' && <OrdersTab />}
         {tab === 'subs' && <SubsTab />}
         {tab === 'settings' && <SettingsTab />}
@@ -247,6 +250,178 @@ function Dash() {
           </tbody>
         </table>
       )}
+    </div>
+  )
+}
+
+/* ---------------- Upload + sélecteur d'image ---------------- */
+
+function UploadButton({ onDone }: { onDone: (url: string) => void }) {
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState('')
+  return (
+    <span className="admin-upload">
+      <label className="btn light">
+        {busy ? 'Envoi…' : 'Uploader'}
+        <input
+          type="file"
+          accept="image/jpeg,image/png,image/webp,image/avif"
+          hidden
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            e.target.value = ''
+            if (!file) return
+            setBusy(true)
+            setErr('')
+            uploadImage(file).then(
+              (url) => {
+                setBusy(false)
+                onDone(url)
+              },
+              (ex: unknown) => {
+                setBusy(false)
+                setErr(ex instanceof Error ? ex.message : "Échec de l'upload.")
+              },
+            )
+          }}
+        />
+      </label>
+      {err && <small className="admin-err">{err}</small>}
+    </span>
+  )
+}
+
+function ImagePick({
+  label,
+  value,
+  onChange,
+  onRemove,
+}: {
+  label: string
+  value: string
+  onChange: (url: string) => void
+  onRemove?: () => void
+}) {
+  const [url, setUrl] = useState('')
+  const options = value && !IMAGE_LIBRARY.includes(value) ? [value, ...IMAGE_LIBRARY] : IMAGE_LIBRARY
+  return (
+    <div className="admin-imgpick">
+      <span className="admin-imgpick-label">{label}</span>
+      {value && <img className="admin-imgpick-prev" src={value} alt="" />}
+      <select value={value} onChange={(e) => onChange(e.target.value)}>
+        <option value="">— Choisir —</option>
+        {options.map((src) => (
+          <option key={src} value={src}>
+            {src.split('/').pop()}
+          </option>
+        ))}
+      </select>
+      <div className="admin-urlrow">
+        <input
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="https://… (image externe)"
+        />
+        <button
+          type="button"
+          className="btn light"
+          onClick={() => {
+            if (url.trim()) {
+              onChange(url.trim())
+              setUrl('')
+            }
+          }}
+        >
+          OK
+        </button>
+        <UploadButton onDone={onChange} />
+      </div>
+      {onRemove && (
+        <button type="button" className="linkish danger" onClick={onRemove}>
+          Retirer ce visuel
+        </button>
+      )}
+    </div>
+  )
+}
+
+/* ---------------- Contenus du site ---------------- */
+
+const SINGLE_SLOTS: { key: Exclude<keyof SiteContent, 'mosaic'>; label: string }[] = [
+  { key: 'hero', label: 'Hero — accueil' },
+  { key: 'catBw', label: 'Catégorie Noir & Blanc' },
+  { key: 'catSeven', label: 'Catégorie By S7ven' },
+  { key: 'storyWide', label: 'Histoire — image large' },
+  { key: 'storySplit', label: 'Accueil — bloc histoire' },
+  { key: 'fabric', label: 'Accueil — bloc matière' },
+]
+
+function ContentTab() {
+  const { settings, saveSettings } = useAdmin()
+  const [f, setF] = useState<SiteContent>({ ...settings.content, mosaic: [...settings.content.mosaic] })
+  const [msg, setMsg] = useState('')
+  return (
+    <div>
+      <div className="admin-head">
+        <h1>Contenus du site</h1>
+        <button
+          type="button"
+          className="btn"
+          onClick={() => {
+            saveSettings({ ...settings, content: f })
+            setMsg('Contenus enregistrés — visibles immédiatement sur le site.')
+          }}
+        >
+          Enregistrer
+        </button>
+      </div>
+      {msg && <p className="admin-ok">{msg}</p>}
+      <div className="admin-card admin-form">
+        <h2>Images principales</h2>
+        <div className="admin-content-grid">
+          {SINGLE_SLOTS.map((s) => (
+            <ImagePick
+              key={s.key}
+              label={s.label}
+              value={f[s.key]}
+              onChange={(v) => {
+                setF((prev) => ({ ...prev, [s.key]: v }))
+                setMsg('')
+              }}
+            />
+          ))}
+        </div>
+        <h2>Mosaïque d’accueil ({f.mosaic.length})</h2>
+        <div className="admin-content-grid">
+          {f.mosaic.map((src, i) => (
+            <ImagePick
+              key={`${src}-${i}`}
+              label={`Visuel ${i + 1}`}
+              value={src}
+              onChange={(v) => {
+                setF((prev) => ({
+                  ...prev,
+                  mosaic: prev.mosaic.map((x, j) => (j === i ? v : x)),
+                }))
+                setMsg('')
+              }}
+              onRemove={() => {
+                setF((prev) => ({ ...prev, mosaic: prev.mosaic.filter((_, j) => j !== i) }))
+                setMsg('')
+              }}
+            />
+          ))}
+        </div>
+        {f.mosaic.length < 6 && (
+          <button
+            type="button"
+            className="btn light"
+            onClick={() => setF((prev) => ({ ...prev, mosaic: [...prev.mosaic, ''] }))}
+          >
+            + Ajouter un visuel
+          </button>
+        )}
+      </div>
     </div>
   )
 }
@@ -568,6 +743,7 @@ function ProductForm({
         >
           Ajouter
         </button>
+        <UploadButton onDone={(u) => set('images', [...f.images, u])} />
       </div>
       {err && <p className="admin-err">{err}</p>}
       <div className="admin-head-btns">

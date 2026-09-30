@@ -3,11 +3,11 @@ import { useState } from 'react'
 import { Header, Footer, CartDrawer, ProductCard } from '../components/Chrome'
 import { useStore } from '../context/Store'
 import { useAdmin } from '../context/Admin'
-import { asset } from '../lib/asset'
 
 export function Home() {
   const { t } = useStore()
-  const { products, addSubscriber } = useAdmin()
+  const { products, addSubscriber, settings } = useAdmin()
+  const content = settings.content
   const [ok, setOk] = useState(false)
   return (
     <>
@@ -15,7 +15,7 @@ export function Home() {
       <CartDrawer />
       <main>
         <section className="hero">
-          <img src={asset('/images/hero.jpg')} alt="Essential and Simple — édition By S7ven" />
+          <img src={content.hero} alt="Essential and Simple — édition By S7ven" />
           <div className="hero-copy">
             <p className="kicker">{t.heroKicker}</p>
             <h1>
@@ -66,7 +66,7 @@ export function Home() {
 
         <section className="cats">
           <Link to="/shop" className="cat">
-            <img src={asset('/images/p41.jpg')} alt="" loading="lazy" />
+            <img src={content.catBw} alt="" loading="lazy" />
             <div>
               <h3>{t.catBw}</h3>
               <p>{t.catBwSub}</p>
@@ -74,7 +74,7 @@ export function Home() {
             </div>
           </Link>
           <Link to="/lookbook" className="cat">
-            <img src={asset('/images/p42.jpg')} alt="" loading="lazy" />
+            <img src={content.catSeven} alt="" loading="lazy" />
             <div>
               <h3>{t.catSeven}</h3>
               <p>{t.catSevenSub}</p>
@@ -101,10 +101,9 @@ export function Home() {
             </Link>
           </div>
           <div className="mosaic">
-            <img src={asset('/images/face.jpg')} alt="" loading="lazy" />
-            <img src={asset('/images/dos.jpg')} alt="" loading="lazy" />
-            <img src={asset('/images/p41.jpg')} alt="" loading="lazy" />
-            <img src={asset('/images/editorial.jpg')} alt="" loading="lazy" />
+            {content.mosaic.map((src, i) => (
+              <img key={`${src}-${i}`} src={src} alt="" loading="lazy" />
+            ))}
           </div>
         </section>
 
@@ -118,7 +117,7 @@ export function Home() {
               {t.navStory} →
             </Link>
           </div>
-          <img src={asset('/images/editorial.jpg')} alt="" />
+          <img src={content.storySplit} alt="" />
         </section>
 
         <section className="philo">
@@ -135,7 +134,7 @@ export function Home() {
               {t.shopNow} →
             </Link>
           </div>
-          <img src={asset('/images/p3.jpg')} alt="" loading="lazy" />
+          <img src={content.fabric} alt="" loading="lazy" />
         </section>
 
         <section className="newsletter">
