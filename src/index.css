@@ -1133,8 +1133,14 @@ legend {
   display: flex;
   width: 100%;
   margin: -14px 0 22px;
-  background: var(--white);
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--white);
+  border-color: var(--ink);
+}
+.stripe-btn:hover {
+  background: #34322f;
+  border-color: #34322f;
+  color: #fff;
 }
 .acc {
   border-top: 1px solid var(--line);
