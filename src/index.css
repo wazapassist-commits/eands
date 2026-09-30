@@ -1623,7 +1623,10 @@ legend {
     padding-bottom: 84px;
   }
   .hero-scroll {
-    display: none;
+    top: 84px;
+    bottom: auto;
+    right: 14px;
+    letter-spacing: 0.24em;
   }
   .newsletter form {
     flex-direction: column;
