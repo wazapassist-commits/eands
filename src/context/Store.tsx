@@ -49,7 +49,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     } catch {
       /* ignore */
     }
-    return 'fr'
+    return 'en'
   })
   const setLocale = useCallback((l: Locale) => {
     setLocaleState(l)
