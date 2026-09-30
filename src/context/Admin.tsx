@@ -258,6 +258,7 @@ type ProductRow = {
   desc_fr: string
   desc_en: string
   desc_es?: string
+  link_stripe?: string
   sort: number
 }
 
@@ -323,6 +324,7 @@ function fromRow(r: ProductRow): Product {
     limited: !!r.limited,
     colors: (r.colors ?? []).filter(toColor),
     images: r.images ?? [],
+    stripeLink: r.link_stripe ?? '',
     name: { fr: r.name_fr ?? '', en: r.name_en ?? '', es: r.name_es ?? r.name_en ?? '' },
     tagline: { fr: r.tagline_fr ?? '', en: r.tagline_en ?? '', es: r.tagline_es ?? r.tagline_en ?? '' },
     description: { fr: r.desc_fr ?? '', en: r.desc_en ?? '', es: r.desc_es ?? r.desc_en ?? '' },
@@ -337,6 +339,7 @@ function toRow(p: Product, sort: number): ProductRow {
     limited: !!p.limited,
     colors: p.colors,
     images: p.images,
+    link_stripe: p.stripeLink ?? '',
     name_fr: p.name.fr,
     name_en: p.name.en,
     name_es: p.name.es,

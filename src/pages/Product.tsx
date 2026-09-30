@@ -126,6 +126,16 @@ export function Product() {
               {p.soldOut ? t.soldOut : `${t.add} — $${(p.price * qty).toFixed(2)}`}
             </button>
           </div>
+          {!p.soldOut && p.stripeLink && (
+            <a
+              className="btn light grow stripe-btn"
+              href={p.stripeLink}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {t.payCard} — ${(p.price * qty).toFixed(2)}
+            </a>
+          )}
 
           <ul className="reassure">
             {t.reassure.map((r) => (

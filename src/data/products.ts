@@ -12,6 +12,7 @@ export type Product = {
   limited?: boolean
   colors: Color[]
   images: string[]
+  stripeLink?: string
   name: Localized
   tagline: Localized
   description: Localized

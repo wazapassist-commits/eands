@@ -678,6 +678,14 @@ function ProductForm({
           />
         </label>
         <label>
+          Lien Stripe (paiement par carte)
+          <input
+            value={f.stripeLink ?? ''}
+            onChange={(e) => set('stripeLink', e.target.value.trim())}
+            placeholder="https://buy.stripe.com/…"
+          />
+        </label>
+        <label>
           Accroche (FR)
           <input
             value={f.tagline.fr}
