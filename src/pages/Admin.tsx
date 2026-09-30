@@ -1247,6 +1247,13 @@ function SettingsTab() {
             onChange={(e) => setF({ ...f, promo: { ...f.promo, en: e.target.value } })}
           />
         </label>
+        <label>
+          Texte (ES)
+          <input
+            value={f.promo.es}
+            onChange={(e) => setF({ ...f, promo: { ...f.promo, es: e.target.value } })}
+          />
+        </label>
         <h2>WhatsApp commandes</h2>
         <label>
           Numéro (format international, sans +)

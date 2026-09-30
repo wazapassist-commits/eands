@@ -73,7 +73,7 @@ export function Header() {
   return (
     <>
       <AnnounceBar />
-      <div className="promo">{locale === 'es' ? settings.promo.en : settings.promo[locale]}</div>
+      <div className="promo">{settings.promo[locale]}</div>
       <header className={`header${scrolled ? ' scrolled' : ''}`}>
         <button className="icon-btn hide-desk" aria-label={t.menu} onClick={() => setMenu(true)}>
           <MenuIcon />

@@ -39,7 +39,7 @@ export type Order = {
 }
 
 export type Settings = {
-  promo: { fr: string; en: string }
+  promo: { fr: string; en: string; es: string }
   whatsapp: string
   content: SiteContent
 }
@@ -171,7 +171,7 @@ function store(key: string, value: unknown) {
 
 function defaultSettings(): Settings {
   return {
-    promo: { fr: copy.fr.promo, en: copy.en.promo },
+    promo: { fr: copy.fr.promo, en: copy.en.promo, es: copy.es.promo },
     whatsapp: DEFAULT_WA,
     content: defaultContent(),
   }
@@ -263,6 +263,7 @@ type ProductRow = {
 type SettingsRow = {
   promo_fr: string
   promo_en: string
+  promo_es?: string
   whatsapp: string
   content: unknown
 }
@@ -397,7 +398,7 @@ async function cloudSettings(): Promise<Settings | null> {
     if (error || !data) return null
     const r = data as SettingsRow
     return {
-      promo: { fr: r.promo_fr, en: r.promo_en },
+      promo: { fr: r.promo_fr, en: r.promo_en, es: r.promo_es ?? r.promo_en },
       whatsapp: r.whatsapp,
       content: mergeContent(r.content),
     }
@@ -568,6 +569,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
               id: 1,
               promo_fr: clean.promo.fr,
               promo_en: clean.promo.en,
+              promo_es: clean.promo.es,
               whatsapp: clean.whatsapp,
               content: clean.content,
             },
@@ -659,7 +661,17 @@ export function AdminProvider({ children }: { children: ReactNode }) {
           }
           if (Array.isArray(d.products)) setProducts(d.products.map(cleanProduct))
           if (d.settings?.promo && d.settings?.whatsapp)
-            setSettings(cleanSettings({ ...d.settings, content: mergeContent(d.settings.content) }))
+            setSettings(
+              cleanSettings({
+                ...d.settings,
+                promo: {
+                  fr: d.settings.promo.fr ?? '',
+                  en: d.settings.promo.en ?? '',
+                  es: d.settings.promo.es ?? d.settings.promo.en ?? '',
+                },
+                content: mergeContent(d.settings.content),
+              }),
+            )
           if (Array.isArray(d.subscribers)) setSubscribers(d.subscribers)
           if (Array.isArray(d.orders)) setOrders(d.orders)
           if (Array.isArray(d.announcements)) setAnnouncements(d.announcements)
@@ -689,6 +701,7 @@ export function AdminProvider({ children }: { children: ReactNode }) {
             id: 1,
             promo_fr: settings.promo.fr,
             promo_en: settings.promo.en,
+            promo_es: settings.promo.es,
             whatsapp: settings.whatsapp,
             content: settings.content,
           },

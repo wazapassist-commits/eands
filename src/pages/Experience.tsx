@@ -47,7 +47,7 @@ function camera(p: number) {
 }
 
 export function ProductStory({ slug, embedded }: { slug?: string; embedded?: boolean }) {
-  const { t, add } = useStore()
+  const { t, locale, add } = useStore()
   const { products } = useAdmin()
   const list = products.length > 0 ? products : FALLBACK_PRODUCTS
   const product =
@@ -151,7 +151,7 @@ export function ProductStory({ slug, embedded }: { slug?: string; embedded?: boo
             {t.add} — ${product.price.toFixed(2)}
           </button>
           <Link className="xp-fiche" to={`/produit/${product.slug}`}>
-            {product.name.en} →
+            {product.name[locale]} →
           </Link>
         </div>
 
