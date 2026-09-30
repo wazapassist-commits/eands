@@ -50,7 +50,7 @@ export function Home() {
         <section className="section">
           <div className="section-head">
             <div>
-              <span className="section-num">01 — Sélection</span>
+              <span className="section-num">{t.secSel}</span>
               <h2>{t.featured}</h2>
               <p>{t.featuredSub}</p>
             </div>
@@ -93,7 +93,7 @@ export function Home() {
         <section className="section" id="galerie">
           <div className="section-head">
             <div>
-              <span className="section-num">02 — Éditorial</span>
+              <span className="section-num">{t.secEdito}</span>
               <h2>{t.gallery}</h2>
               <p>{t.gallerySub}</p>
             </div>
@@ -128,7 +128,7 @@ export function Home() {
 
         <section className="fabric">
           <div>
-            <span className="section-num">03 — Matière</span>
+            <span className="section-num">{t.secMat}</span>
             <h2>{t.fabricTitle}</h2>
             <p className="desc">{t.fabricText}</p>
             <Link className="text-link" to="/shop">

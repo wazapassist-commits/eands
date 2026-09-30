@@ -199,7 +199,7 @@ export function Product() {
       <section className="section">
         <div className="section-head">
           <div>
-            <span className="section-num">04 — Suite</span>
+            <span className="section-num">{t.secMore}</span>
             <h2>{t.related}</h2>
           </div>
           <Link to="/shop" className="text-link">
