@@ -15,7 +15,7 @@ export const copy = {
     heroKicker: 'Édition limitée · By S7ven',
     heroTitle: 'Moins de bruit.\nPlus de présence.',
     heroSub:
-      'Streetwear minimal, coton lourd 260 g. Des pièces noires et crème pensées pour durer, pas pour distraire.',
+      'Streetwear minimal, coton lourd 260 g. Des pièces noires et blanches pensées pour durer, pas pour distraire.',
     shopNow: 'Acheter',
     lookbook: 'Lookbook',
     featured: 'La collection',
@@ -30,7 +30,7 @@ export const copy = {
     storyP1:
       'Essential and Simple est née d’un besoin de revenir à l’origine du vêtement. Dans un monde saturé de bruit visuel, nous choisissons le silence de la simplicité. Nos pièces ne cherchent pas à distraire : elles définissent une présence.',
     storyP2:
-      'Chaque ligne, chaque contraste entre le noir et le crème, vise une esthétique pure, sans artifice. Porter Essential and Simple, c’est affirmer que le détail fait le tout — et que ce qui est simple reste éternel.',
+      'Chaque ligne, chaque contraste entre le noir et le blanc, vise une esthétique pure, sans artifice. Porter Essential and Simple, c’est affirmer que le détail fait le tout — et que ce qui est simple reste éternel.',
     philoTitle: 'Philosophie',
     philoQuote:
       '« Less is more. » Coton lourd, construction nette, graphisme géométrique. La signature By S7ven reste discrète : une exclusivité silencieuse, jamais un branding criant.',
@@ -158,7 +158,7 @@ export const copy = {
     heroKicker: 'Limited edition · By S7ven',
     heroTitle: 'Less noise.\nMore identity.',
     heroSub:
-      'Minimal streetwear in 260g heavyweight cotton. Black and cream pieces made to last — not to distract.',
+      'Minimal streetwear in 260g heavyweight cotton. Black and white pieces made to last — not to distract.',
     shopNow: 'Shop now',
     lookbook: 'Lookbook',
     featured: 'The collection',
@@ -173,7 +173,7 @@ export const copy = {
     storyP1:
       'Essential and Simple was born from a desire to return to the origins of clothing. In a world saturated with visual noise, we choose the silence of simplicity. Our pieces do not seek to distract — they define a presence.',
     storyP2:
-      'Every line, every contrast between black and cream, is designed for a pure aesthetic, free of artifice. To wear Essential and Simple is to affirm that the detail makes the whole — and that what is simple remains eternal.',
+      'Every line, every contrast between black and white, is designed for a pure aesthetic, free of artifice. To wear Essential and Simple is to affirm that the detail makes the whole — and that what is simple remains eternal.',
     philoTitle: 'Philosophy',
     philoQuote:
       '“Less is more.” Heavyweight cotton, clean construction, geometric design. The By S7ven signature stays quiet: exclusivity without loud branding.',
@@ -301,7 +301,7 @@ export const copy = {
     heroKicker: 'Edición limitada · By S7ven',
     heroTitle: 'Menos ruido.\nMás identidad.',
     heroSub:
-      'Streetwear minimal, algodón pesado de 260 g. Piezas negras y crema hechas para durar, no para distraer.',
+      'Streetwear minimal, algodón pesado de 260 g. Piezas negras y blancas hechas para durar, no para distraer.',
     shopNow: 'Comprar',
     lookbook: 'Lookbook',
     featured: 'La colección',
@@ -316,7 +316,7 @@ export const copy = {
     storyP1:
       'Essential and Simple nació del deseo de volver al origen de la prenda. En un mundo saturado de ruido visual, elegimos el silencio de la simplicidad. Nuestras piezas no buscan distraer: definen una presencia.',
     storyP2:
-      'Cada línea, cada contraste entre el negro y el crema, busca una estética pura, sin artificios. Vestir Essential and Simple es afirmar que el detalle lo es todo — y que lo simple permanece.',
+      'Cada línea, cada contraste entre el negro y el blanco, busca una estética pura, sin artificios. Vestir Essential and Simple es afirmar que el detalle lo es todo — y que lo simple permanece.',
     philoTitle: 'Filosofía',
     philoQuote:
       '«Less is more.» Algodón pesado, construcción limpia, diseño geométrico. La firma By S7ven es discreta: exclusividad silenciosa, nunca un logo a gritos.',
