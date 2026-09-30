@@ -78,14 +78,13 @@ function Login({ onOk }: { onOk: () => void }) {
   )
 }
 
+const ADMIN_EMAIL = 'contact@essentialandsimple.com'
+
 function CloudLogin() {
   const { signIn } = useAdmin()
-  const [id, setId] = useState('')
   const [pw, setPw] = useState('')
   const [err, setErr] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
-  const toEmail = (v: string) =>
-    v.includes('@') ? v.trim() : 'contact@essentialandsimple.com'
   return (
     <div className="admin-login">
       <form
@@ -94,18 +93,19 @@ function CloudLogin() {
           e.preventDefault()
           setBusy(true)
           setErr(null)
-          signIn(toEmail(id), pw).then((error) => {
+          signIn(ADMIN_EMAIL, pw).then((error) => {
             setBusy(false)
             if (error) setErr(error)
           })
         }}
       >
         <p className="wordmark sm">Essential <em>and</em> Simple</p>
-        <h1>Administration · Cloud</h1>
+        <h1>Administration</h1>
         <input
-          value={id}
-          onChange={(e) => setId(e.target.value)}
-          placeholder="Pseudo ou e-mail (eands)"
+          type="password"
+          value={pw}
+          onChange={(e) => setPw(e.target.value)}
+          placeholder="Mot de passe"
           autoFocus
           required
         />
