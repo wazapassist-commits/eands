@@ -34,14 +34,31 @@ export type Settings = {
   content: SiteContent
 }
 
+export type GalleryShot = { src: string; label: string }
+
 export type SiteContent = {
   hero: string
   catBw: string
   catSeven: string
   mosaic: string[]
+  gallery: GalleryShot[]
   storyWide: string
   storySplit: string
   fabric: string
+}
+
+export function defaultGallery(): GalleryShot[] {
+  return [
+    { src: asset('/images/hero.jpg'), label: '01 — Hero' },
+    { src: asset('/images/p42.jpg'), label: '02 — Studio' },
+    { src: asset('/images/editorial.jpg'), label: '03 — Editorial' },
+    { src: asset('/images/face.jpg'), label: '04 — Face' },
+    { src: asset('/images/dos.jpg'), label: '05 — Dos' },
+    { src: asset('/images/p41.jpg'), label: '06 — Noir & Blanc' },
+    { src: asset('/images/p1.jpg'), label: '07 — Figure Block' },
+    { src: asset('/images/p2.jpg'), label: '08 — Figure Tee' },
+    { src: asset('/images/p3.jpg'), label: '09 — The Mark' },
+  ]
 }
 
 export function defaultContent(): SiteContent {
@@ -55,6 +72,7 @@ export function defaultContent(): SiteContent {
       asset('/images/p41.jpg'),
       asset('/images/editorial.jpg'),
     ],
+    gallery: defaultGallery(),
     storyWide: asset('/images/p42.jpg'),
     storySplit: asset('/images/editorial.jpg'),
     fabric: asset('/images/p3.jpg'),
@@ -148,19 +166,30 @@ function mergeContent(raw: unknown): SiteContent {
   const d = defaultContent()
   if (!raw || typeof raw !== 'object') return d
   const c = raw as Partial<SiteContent>
+  const str = (v: unknown, fb: string) => (typeof v === 'string' && v ? v : fb)
+  const gallery = Array.isArray(c.gallery) && c.gallery.length > 0
+    ? (c.gallery as unknown[])
+        .filter(
+          (g): g is GalleryShot =>
+            !!g && typeof g === 'object' && typeof (g as GalleryShot).src === 'string',
+        )
+        .map((g, i) => ({
+          src: g.src,
+          label: typeof g.label === 'string' && g.label ? g.label : `0${i + 1}`,
+        }))
+    : d.gallery
   return {
-    hero: typeof c.hero === 'string' && c.hero ? c.hero : d.hero,
-    catBw: typeof c.catBw === 'string' && c.catBw ? c.catBw : d.catBw,
-    catSeven: typeof c.catSeven === 'string' && c.catSeven ? c.catSeven : d.catSeven,
+    hero: str(c.hero, d.hero),
+    catBw: str(c.catBw, d.catBw),
+    catSeven: str(c.catSeven, d.catSeven),
     mosaic:
       Array.isArray(c.mosaic) && c.mosaic.length > 0
         ? c.mosaic.filter((x): x is string => typeof x === 'string')
         : d.mosaic,
-    storyWide:
-      typeof c.storyWide === 'string' && c.storyWide ? c.storyWide : d.storyWide,
-    storySplit:
-      typeof c.storySplit === 'string' && c.storySplit ? c.storySplit : d.storySplit,
-    fabric: typeof c.fabric === 'string' && c.fabric ? c.fabric : d.fabric,
+    gallery,
+    storyWide: str(c.storyWide, d.storyWide),
+    storySplit: str(c.storySplit, d.storySplit),
+    fabric: str(c.fabric, d.fabric),
   }
 }
 

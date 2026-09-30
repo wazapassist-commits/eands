@@ -348,7 +348,7 @@ function ImagePick({
 
 /* ---------------- Contenus du site ---------------- */
 
-const SINGLE_SLOTS: { key: Exclude<keyof SiteContent, 'mosaic'>; label: string }[] = [
+const SINGLE_SLOTS: { key: Exclude<keyof SiteContent, 'mosaic' | 'gallery'>; label: string }[] = [
   { key: 'hero', label: 'Hero — accueil' },
   { key: 'catBw', label: 'Catégorie Noir & Blanc' },
   { key: 'catSeven', label: 'Catégorie By S7ven' },
@@ -422,6 +422,65 @@ function ContentTab() {
             + Ajouter un visuel
           </button>
         )}
+        <h2>Galerie / Lookbook ({f.gallery.length})</h2>
+        <div className="admin-content-grid">
+          {f.gallery.map((shot, i) => (
+            <div key={`${shot.src}-${i}`} className="admin-imgpick">
+              <ImagePick
+                label={`Visuel ${i + 1}`}
+                value={shot.src}
+                onChange={(v) => {
+                  setF((prev) => ({
+                    ...prev,
+                    gallery: prev.gallery.map((x, j) => (j === i ? { ...x, src: v } : x)),
+                  }))
+                  setMsg('')
+                }}
+              />
+              <label>
+                Légende
+                <input
+                  value={shot.label}
+                  onChange={(e) => {
+                    const v = e.target.value
+                    setF((prev) => ({
+                      ...prev,
+                      gallery: prev.gallery.map((x, j) =>
+                        j === i ? { ...x, label: v } : x,
+                      ),
+                    }))
+                    setMsg('')
+                  }}
+                />
+              </label>
+              <button
+                type="button"
+                className="linkish danger"
+                onClick={() => {
+                  setF((prev) => ({
+                    ...prev,
+                    gallery: prev.gallery.filter((_, j) => j !== i),
+                  }))
+                  setMsg('')
+                }}
+              >
+                Retirer ce visuel
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          className="btn light"
+          onClick={() =>
+            setF((prev) => ({
+              ...prev,
+              gallery: [...prev.gallery, { src: '', label: '' }],
+            }))
+          }
+        >
+          + Ajouter à la galerie
+        </button>
       </div>
     </div>
   )
