@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Header, Footer, CartDrawer, ProductCard } from '../components/Chrome'
 import { useStore } from '../context/Store'
 import { useAdmin } from '../context/Admin'
-import { pic } from '../lib/asset'
+import { asset, pic } from '../lib/asset'
 
 export function Home() {
   const { t } = useStore()
@@ -89,6 +89,22 @@ export function Home() {
             <div key={x.b}><b>{x.b}</b>{x.s}</div>
           ))}
         </div>
+
+        <section className="film">
+          <p className="kicker">{t.filmKicker}</p>
+          <h2>{t.filmTitle}</h2>
+          <p className="film-sub">{t.filmSub}</p>
+          <video
+            src={asset('/videos/v1.mp4')}
+            poster={pic(content.hero)}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            disablePictureInPicture
+          />
+        </section>
 
         <section className="section" id="galerie">
           <div className="section-head">
